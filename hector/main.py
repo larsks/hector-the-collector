@@ -8,7 +8,7 @@ import logging
 import os
 import sys
 
-import bzstats.collector
+import hector.collector
 
 LOG = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def main():
         sys.exit(2)
 
     bzapi = bugzilla.Bugzilla(url=args.url)
-    c = bzstats.collector.Collector(bzapi)
+    c = hector.collector.Collector(bzapi)
     for query in queries:
         c.collect(query)
 
