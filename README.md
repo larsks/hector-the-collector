@@ -1,5 +1,31 @@
 # Hector the Collector: Bugzilla statistics collector
 
+## Command line
+
+    usage: hector [-h] [--config CONFIG] [--url URL] [--debug] [--verbose]
+                  [query_url [query_url ...]]
+
+    positional arguments:
+      query_url
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --config CONFIG, -f CONFIG
+      --url URL, -u URL
+
+    Logging:
+      --debug, -d
+      --verbose, -v
+
+## Configuration
+
+    {
+      "query_urls": [
+        "https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW..."
+        "https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW..."
+      ]
+    }
+
 ## Configuring the CollectD plugin
 
     LoadPlugin "python"
