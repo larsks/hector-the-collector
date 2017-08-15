@@ -14,15 +14,10 @@ def bug_to_dict(bug):
     return bugd
 
 class Collector(object):
-    def __init__(self, url, group_by=None):
-        self.url = url
+    def __init__(self, bzapi, group_by=None):
         self.group_by = group_by if group_by else default_group_by
         self._stats = defaultdict(lambda: defaultdict(int))
-
-        self.init_bugzilla()
-
-    def init_bugzilla(self):
-        self.bzapi = bugzilla.Bugzilla(self.url)
+        self.bzapi = bzapi
 
     def collect(self, query_url):
         query = self.bzapi.url_to_query(query_url)

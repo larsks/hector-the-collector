@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import argparse
+import bugzilla
 import datetime
 import json
 import logging
@@ -56,7 +57,8 @@ def main():
         LOG.error("you must provide at least one query")
         sys.exit(2)
 
-    c = bzstats.collector.Collector(url)
+    bzapi = bugzilla.Bugzilla(url=args.url)
+    c = bzstats.collector.Collector(bzapi)
     for query in queries:
         c.collect(query)
 
