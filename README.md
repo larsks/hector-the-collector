@@ -1,8 +1,18 @@
 # Hector the Collector: Bugzilla statistics collector
 
+## Queries
+
+Queries are specified as a Bugzilla query URL.  You can generate these
+using the advanced search web interface, e.g.,
+<https://bugzilla.redhat.com/query.cgi>.
+
 ## Command line
 
-    usage: hector [-h] [--config CONFIG] [--url URL] [--debug] [--verbose]
+You can run queries on the command line.  Hector will output the
+results as JSON to stdout.
+
+    usage: hector [-h] [--config CONFIG] [--url URL] [--username USERNAME]
+                  [--password PASSWORD] [--debug] [--verbose]
                   [query_url [query_url ...]]
 
     positional arguments:
@@ -12,6 +22,8 @@
       -h, --help            show this help message and exit
       --config CONFIG, -f CONFIG
       --url URL, -u URL
+      --username USERNAME, -U USERNAME
+      --password PASSWORD, -P PASSWORD
 
     Logging:
       --debug, -d

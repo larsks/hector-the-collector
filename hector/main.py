@@ -16,8 +16,11 @@ def parse_args():
     p = argparse.ArgumentParser()
 
     p.add_argument('--config', '-f')
+
     p.add_argument('--url', '-u',
                    default='https://bugzilla.redhat.com')
+    p.add_argument('--username', '-U')
+    p.add_argument('--password', '-P')
 
     g = p.add_argument_group('Logging')
     g.add_argument('--debug', '-d',
@@ -45,19 +48,22 @@ def main():
     else:
         config = {}
 
-    LOG.info('config=%s', config)
-
     url = args.url if args.url else config.get('url')
+    username = args.username if args.username else config.get('username')
+    password = args.password if args.password else config.get('password')
+    queries = args.query_url if args.query_url else config.get('query_urls')
+
     if url is None:
         LOG.error("you must provide a bugzilla url")
         sys.exit(2)
 
-    queries = args.query_url if args.query_url else config.get('query_urls')
     if not queries:
         LOG.error("you must provide at least one query")
         sys.exit(2)
 
-    bzapi = bugzilla.Bugzilla(url=args.url)
+    bzapi = bugzilla.Bugzilla(url=args.url,
+                              user=username,
+                              password=password)
     c = hector.collector.Collector(bzapi)
     for query in queries:
         c.collect(query)
