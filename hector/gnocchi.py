@@ -5,9 +5,11 @@ import datetime
 import logging
 import uuid
 
-from gnocchiclient import auth
-from gnocchiclient.v1 import client
-from gnocchiclient import exceptions
+import gnocchiclient
+import gnocchiclient.v1
+import gnocchiclient.exceptions
+
+import hector.defaults
 
 LOG = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ def conflictok(func):
     def wrapper(*args, **kwargs):
         try:
             func(*args, **kwargs)
-        except exceptions.Conflict:
+        except gnocchiclient.exceptions.Conflict:
             pass
 
     return wrapper
@@ -97,8 +99,8 @@ class GnocchiWriter(object):
 
     def __init__(self, name,
                  policy=None,
-                 username='admin',
-                 endpoint='http://localhost:8041'):
+                 username=hector.defaults.gnocchi_username,
+                 endpoint=hector.defaults.gnocchi_url):
 
         if policy is None:
             policy = DefaultPolicy()
@@ -127,9 +129,11 @@ class GnocchiWriter(object):
         return self._rid
 
     def init_gnocchi(self):
-        auth_plugin = auth.GnocchiBasicPlugin(user=self.username,
-                                              endpoint=self.endpoint)
-        self.gnocchi = client.Client(session_options={'auth': auth_plugin})
+        auth_plugin = gnocchiclient.auth.GnocchiBasicPlugin(
+            user=self.username,
+            endpoint=self.endpoint)
+        self.gnocchi = gnocchiclient.v1.client.Client(
+            session_options={'auth': auth_plugin})
 
     def apply_policy(self):
         self.create_archive_policy()
@@ -156,7 +160,6 @@ class GnocchiWriter(object):
         LOG.info('created resource type %s',
                  self.policy.resource_type_name)
 
-    @conflictok
     def create_resource(self):
         query = {'=': {'name': self.name}}
         if not self.gnocchi.resource.search(self.policy.resource_type_name,
@@ -185,9 +188,3 @@ class GnocchiWriter(object):
 
         self.gnocchi.metric.batch_resources_metrics_measures(
             {self.rid: measures}, create_metrics=True)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level='DEBUG')
-    g = GnocchiWriter('dev')
-    g.apply_policy()
