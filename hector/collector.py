@@ -6,14 +6,6 @@ LOG = logging.getLogger(__name__)
 default_group_by = ['status', 'component', 'product', 'keywords']
 
 
-def bug_to_dict(bug):
-    bugd = {}
-    for field in bug._bug_fields:
-        bugd[field] = getattr(bug, field, None)
-
-    return bugd
-
-
 class Collector(object):
 
     def __init__(self, bzapi, group_by=None):
