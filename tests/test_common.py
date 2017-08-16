@@ -1,8 +1,10 @@
 import argparse
-import unittest
 import mock
+import pytest
+import unittest
 
 import hector.common
+import hector.exc
 
 
 class TestCommon(unittest.TestCase):
@@ -54,3 +56,15 @@ class TestCommon(unittest.TestCase):
             url=hector.defaults.bugzilla_url,
             user='testuser',
             password=None)
+
+    @mock.patch('hector.common.bugzilla')
+    def test_connect_to_bugzilla_no_url(self, mock_bugzilla):
+        p = argparse.ArgumentParser()
+        hector.common.add_bugzilla_options(p)
+        args = p.parse_args(['--bugzilla-url', ''])
+        config = {}
+
+        with pytest.raises(hector.exc.ConfigurationError):
+            hector.common.connect_to_bugzilla(args, config)
+
+        mock_bugzilla.Bugzilla.assert_not_called()
