@@ -1,3 +1,6 @@
 .venv
 .eggs
 *.egg-info
+.cache
+.coverage
+.tox
