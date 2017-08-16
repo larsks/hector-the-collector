@@ -1,10 +1,10 @@
-import bugzilla
 import logging
 from collections import defaultdict
 
 LOG = logging.getLogger(__name__)
 
 default_group_by = ['status', 'component', 'product', 'keywords']
+
 
 def bug_to_dict(bug):
     bugd = {}
@@ -13,7 +13,9 @@ def bug_to_dict(bug):
 
     return bugd
 
+
 class Collector(object):
+
     def __init__(self, bzapi, group_by=None):
         self.group_by = group_by if group_by else default_group_by
         self._stats = defaultdict(lambda: defaultdict(int))

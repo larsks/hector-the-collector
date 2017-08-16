@@ -145,7 +145,8 @@ class GnocchiWriter(object):
 
     @conflictok
     def create_archive_policy_rule(self):
-        self.gnocchi.archive_policy_rule.create(self.policy.archive_policy_rule)
+        self.gnocchi.archive_policy_rule.create(
+            self.policy.archive_policy_rule)
         LOG.info('created archive policy rule %s',
                  self.policy.archive_policy_rule_name)
 

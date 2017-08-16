@@ -4,23 +4,26 @@ from __future__ import absolute_import
 import bugzilla
 import collectd
 import itertools
-import threading
-import time
 
 import hector.collector
 
 default_interval = 12 * 3600  # 12 hours
 
+
 class BzstatsError(Exception):
     pass
+
 
 class ConfigurationError(BzstatsError):
     pass
 
+
 class AuthenticationError(BzstatsError):
     pass
 
+
 class BzstatsPlugin(object):
+
     def __init__(self, iid, config):
         self.bzapi = None
         self.instance = 'unknown-%d' % iid
@@ -82,9 +85,9 @@ class BzstatsPlugin(object):
             raise AuthenticationError(
                 'failed to authenticate to %s' % self.url)
 
-        res = collectd.register_read(self.cb_read,
-                                     interval=self.interval,
-                                     name='hector.%s' % self.instance)
+        collectd.register_read(self.cb_read,
+                               interval=self.interval,
+                               name='hector.%s' % self.instance)
 
         self.log_info('finish initialize hector@%s' % self.instance)
 
