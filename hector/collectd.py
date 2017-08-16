@@ -2,30 +2,20 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import bugzilla
-import collectd
 import itertools
+import collectd
 
 import hector.collector
+import hector.exc
 
 default_interval = 12 * 3600  # 12 hours
 
 
-class BzstatsError(Exception):
-    pass
-
-
-class ConfigurationError(BzstatsError):
-    pass
-
-
-class AuthenticationError(BzstatsError):
-    pass
-
-
-class BzstatsPlugin(object):
+class Plugin(object):
 
     def __init__(self, iid, config):
         self.bzapi = None
+        self.iid = iid
         self.instance = 'unknown-%d' % iid
         self.interval = default_interval
         self.password = None
@@ -64,25 +54,30 @@ class BzstatsPlugin(object):
     def log_error(self, msg):
         collectd.error('hector.%s: %s' % (self.instance, msg))
 
+    def connect_to_bugzilla(self):
+        self.bzapi = bugzilla.Bugzilla(url=self.url,
+                                       user=self.username,
+                                       password=self.password)
+
     def cb_init(self):
         self.log_info('start initialize hector@%s' % self.instance)
 
         if not self.url:
-            raise ConfigurationError('you have not configure a bugzilla url')
+            raise hector.exc.ConfigurationError(
+                'you have not configure a bugzilla url')
 
         if len(self.query_urls) == 0:
-            raise ConfigurationError('you have not configured any queries')
+            raise hector.exc.ConfigurationError(
+                'you have not configured any queries')
 
         if not self.username or not self.password:
             self.log_warning('you have not configured any credentials')
 
         self.log_info('connecting to url %s' % self.url)
-        self.bzapi = bugzilla.Bugzilla(url=self.url,
-                                       user=self.username,
-                                       password=self.password)
+        self.connect_to_bugzilla()
 
         if not self.bzapi.logged_in:
-            raise AuthenticationError(
+            raise hector.exc.AuthenticationError(
                 'failed to authenticate to %s' % self.url)
 
         collectd.register_read(self.cb_read,
@@ -114,8 +109,8 @@ class BzstatsPlugin(object):
             self.instance))
 
 
-class BzstatsPluginManager(object):
-    '''This is a simple wrapper that handles instantiating a new BzStatsPlugin
+class PluginManager(object):
+    '''This is a simple wrapper that handles instantiating a new Plugin
     instance for each configuration block encountered by collectd.'''
 
     def __init__(self):
@@ -124,10 +119,10 @@ class BzstatsPluginManager(object):
 
     def cb_config(self, config):
         iid = next(self.iid)
-        new = BzstatsPlugin(iid, config)
+        new = Plugin(iid, config)
         self.instances.append(new)
         collectd.register_init(new.cb_init)
 
 
-plugin = BzstatsPluginManager()
+plugin = PluginManager()
 collectd.register_config(plugin.cb_config)

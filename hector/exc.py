@@ -2,12 +2,9 @@ class HectorException(Exception):
     pass
 
 
-class CLIError(HectorException):
-    '''This represents an error that is meant to be presented
-    to the user.'''
-
+class ConfigurationError(HectorException):
     pass
 
 
-class ConfigurationError(CLIError):
+class AuthenticationError(HectorException):
     pass

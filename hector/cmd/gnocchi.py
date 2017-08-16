@@ -75,7 +75,7 @@ def _real_main():
 def main():
     try:
         return _real_main()
-    except hector.exc.CLIError as err:
+    except hector.exc.HectorException as err:
         LOG.error(err)
         sys.exit(1)
 
