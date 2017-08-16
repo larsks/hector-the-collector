@@ -92,7 +92,9 @@ class DefaultPolicy(object):
             }
         }
 
+
 class GnocchiWriter(object):
+
     def __init__(self, name,
                  policy=None,
                  username='admin',
@@ -138,14 +140,20 @@ class GnocchiWriter(object):
     @conflictok
     def create_archive_policy(self):
         self.gnocchi.archive_policy.create(self.policy.archive_policy)
+        LOG.info('created archive policy %s',
+                 self.policy.archive_policy_name)
 
     @conflictok
     def create_archive_policy_rule(self):
         self.gnocchi.archive_policy_rule.create(self.policy.archive_policy_rule)
+        LOG.info('created archive policy rule %s',
+                 self.policy.archive_policy_rule_name)
 
     @conflictok
     def create_resource_type(self):
         self.gnocchi.resource_type.create(self.policy.resource_type)
+        LOG.info('created resource type %s',
+                 self.policy.resource_type_name)
 
     @conflictok
     def create_resource(self):
@@ -154,9 +162,11 @@ class GnocchiWriter(object):
                                             query):
             rsrc = {'name': self.name, 'id': str(uuid.uuid4())}
             self.gnocchi.resource.create(self.policy.resource_type_name,
-                                     rsrc)
+                                         rsrc)
+            LOG.info('created resource %s', self.name)
 
     def write(self, stats, timestamp=None):
+        LOG.info('writing statistics to gnocchi')
         if timestamp is None:
             timestamp = datetime.datetime.now()
 
@@ -166,6 +176,7 @@ class GnocchiWriter(object):
                 qname = '{}.{}.{}'.format(self.policy.metric_prefix,
                                           klass,
                                           name)
+                LOG.debug('writing %s=%s', qname, value)
                 measures[qname] = [{
                     'timestamp': timestamp,
                     'value': value
@@ -174,8 +185,8 @@ class GnocchiWriter(object):
         self.gnocchi.metric.batch_resources_metrics_measures(
             {self.rid: measures}, create_metrics=True)
 
+
 if __name__ == '__main__':
     logging.basicConfig(level='DEBUG')
     g = GnocchiWriter('dev')
     g.apply_policy()
-

@@ -1,0 +1,5 @@
+bugzilla_url = 'https://bugzilla.redhat.com'
+loglevel = 'WARNING'
+gnocchi_url = 'http://localhost:8041'
+gnocchi_username = 'admin'
+gnocchi_instance_name = 'bugzilla'
