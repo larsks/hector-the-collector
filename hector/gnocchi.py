@@ -137,10 +137,12 @@ class GnocchiWriter(object):
             session_options={'auth': auth_plugin})
 
     def apply_policy(self):
+        LOG.info('start creating gnocchi resources')
         self.create_archive_policy()
         self.create_archive_policy_rule()
         self.create_resource_type()
         self.create_resource()
+        LOG.info('finish creating gnocchi resources')
 
     @conflictok
     def create_archive_policy(self):

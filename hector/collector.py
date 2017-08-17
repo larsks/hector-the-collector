@@ -15,7 +15,7 @@ class Collector(object):
 
     def collect(self, query_url):
         query = self.bzapi.url_to_query(query_url)
-        LOG.info('query: %s', query)
+        LOG.debug('query: %s', query)
         res = self.bzapi.query(query)
         self._stats['total']['bugs'] += len(res)
 
