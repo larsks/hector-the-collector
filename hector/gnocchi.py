@@ -6,7 +6,8 @@ import logging
 import uuid
 
 import gnocchiclient
-import gnocchiclient.v1
+import gnocchiclient.auth
+import gnocchiclient.v1.client
 import gnocchiclient.exceptions
 
 import hector.defaults
