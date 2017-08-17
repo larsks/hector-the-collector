@@ -6,14 +6,15 @@ Queries are specified as a Bugzilla query URL.  You can generate these
 using the advanced search web interface, e.g.,
 <https://bugzilla.redhat.com/query.cgi>.
 
-## Command line
+## hector-json
 
-You can run queries on the command line.  Hector will output the
-results as JSON to stdout.
+Perform queries and print the results as JSON to stdout.
 
-    usage: hector [-h] [--config CONFIG] [--url URL] [--username USERNAME]
-                  [--password PASSWORD] [--debug] [--verbose]
-                  [query_url [query_url ...]]
+    usage: hector-json [-h] [--bugzilla-url BUGZILLA_URL]
+                       [--bugzilla-username BUGZILLA_USERNAME]
+                       [--bugzilla-password BUGZILLA_PASSWORD] [--debug]
+                       [--verbose] [--config CONFIG]
+                       [query_url [query_url ...]]
 
     positional arguments:
       query_url
@@ -21,13 +22,61 @@ results as JSON to stdout.
     optional arguments:
       -h, --help            show this help message and exit
       --config CONFIG, -f CONFIG
-      --url URL, -u URL
-      --username USERNAME, -U USERNAME
-      --password PASSWORD, -P PASSWORD
+                            Path to a JSON configuration file
+
+    Bugzilla:
+      --bugzilla-url BUGZILLA_URL
+                            URL to a Bugzilla instance
+      --bugzilla-username BUGZILLA_USERNAME
+                            Username for authenticating to Bugzilla
+      --bugzilla-password BUGZILLA_PASSWORD
+                            Password for authenticating to Bugzilla
 
     Logging:
-      --debug, -d
-      --verbose, -v
+      --debug, -d           Show log messages at debug level and higher
+      --verbose, -v         Show log messages at info level and higher
+
+## hector-gnocchi
+
+Perform queries and store the results in Gnocchi.
+
+    usage: hector-gnocchi [-h] [--bugzilla-url BUGZILLA_URL]
+                          [--bugzilla-username BUGZILLA_USERNAME]
+                          [--bugzilla-password BUGZILLA_PASSWORD] [--debug]
+                          [--verbose] [--config CONFIG]
+                          [--gnocchi-instance-name GNOCCHI_INSTANCE_NAME]
+                          [--gnocchi-url GNOCCHI_URL]
+                          [--gnocchi-username GNOCCHI_USERNAME] [--skip-policy]
+                          [query_url [query_url ...]]
+
+    positional arguments:
+      query_url
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --config CONFIG, -f CONFIG
+                            Path to a JSON configuration file
+
+    Bugzilla:
+      --bugzilla-url BUGZILLA_URL
+                            URL to a Bugzilla instance
+      --bugzilla-username BUGZILLA_USERNAME
+                            Username for authenticating to Bugzilla
+      --bugzilla-password BUGZILLA_PASSWORD
+                            Password for authenticating to Bugzilla
+
+    Logging:
+      --debug, -d           Show log messages at debug level and higher
+      --verbose, -v         Show log messages at info level and higher
+
+    Gnocchi:
+      --gnocchi-instance-name GNOCCHI_INSTANCE_NAME
+                            Name of resource with which to associate metrics
+      --gnocchi-url GNOCCHI_URL
+                            URL to a Gnocchi instance
+      --gnocchi-username GNOCCHI_USERNAME
+                            Username for authenticating to Gnocchi
+      --skip-policy         Do not attempt to create Gnocchi policy
 
 ## Configuration
 
