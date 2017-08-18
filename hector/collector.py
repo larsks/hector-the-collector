@@ -12,14 +12,22 @@ class Collector(object):
         self.group_by = group_by if group_by else default_group_by
         self._stats = defaultdict(lambda: defaultdict(int))
         self.bzapi = bzapi
+        self.seen = set()
 
     def collect(self, query_url):
         query = self.bzapi.url_to_query(query_url)
         LOG.debug('query: %s', query)
         res = self.bzapi.query(query)
-        self._stats['total']['bugs'] += len(res)
 
         for bug in res:
+
+            # avoiding processing the same bug multiple times if it
+            # is found in multiple queries
+            if bug.id in self.seen:
+                continue
+            self.seen.add(bug.id)
+            self._stats['total']['bugs'] += 1
+
             for field in self.group_by:
                 fieldval = getattr(bug, field)
                 if isinstance(fieldval, list):
