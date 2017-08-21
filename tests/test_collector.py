@@ -22,11 +22,13 @@ class TestCollector(unittest.TestCase):
         bzapi = mock.MagicMock()
 
         bugs = [
-            FakeBug(status='test',
+            FakeBug(id=100,
+                    status='test',
                     component='test',
                     product='test',
                     keywords=['test']),
-            FakeBug(status='test',
+            FakeBug(id=101,
+                    status='test',
                     component='test',
                     product='test',
                     keywords=['test']),
